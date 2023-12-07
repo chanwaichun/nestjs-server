@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
 import { encodeToken } from '../util/token';
 import { DbService } from '../db/db.service';
@@ -23,8 +23,19 @@ export class UserService {
     }
   }
 
-  login(body: UserLoginDto) {
-    console.log(body);
-    return encodeToken({ test: 1 });
+  async login(body: UserLoginDto) {
+    const { userName = '', password = '' } = body;
+    const [result] = await this.dbService.sequelize.query(
+      'SELECT * FROM user WHERE (userName = ? AND password = ?) OR (phone = ? AND password = ?) ',
+      {
+        replacements: [userName, password, userName, password],
+      },
+    );
+    console.log(result);
+    if (result.length === 1) {
+      return encodeToken(result[0]);
+    } else {
+      return '';
+    }
   }
 }

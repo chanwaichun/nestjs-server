@@ -39,11 +39,16 @@ export class UserController {
   }
 
   @Post('/login')
-  login(@Body() body: UserLoginDto, @Res() res: Response) {
+  async login(@Body() body: UserLoginDto, @Res() res: Response) {
     try {
-      const token = this.userService.login(body);
+      const token = await this.userService.login(body);
+      if (!token) {
+        writeJson(res, 500, { data: null, msg: '用户名或密码错误' });
+        return;
+      }
       writeJson(res, 200, { data: token });
     } catch (e) {
+      console.log(e);
       throw new HttpException(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

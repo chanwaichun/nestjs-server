@@ -19,5 +19,6 @@ export function writeJson(
     ...data,
   };
   res.status(status);
-  res.json(defaultResult);
+  res.send(defaultResult);
+  // res.send();
 }
