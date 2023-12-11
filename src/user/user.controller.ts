@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { DbService } from '../db/db.service';
-import { UserAddDto, UserLoginDto } from './dto/user.dto';
+import { UserAddDto, UserLoginDto, UserRegister } from './dto/user.dto';
 import { writeJson } from '../util';
 import { Response } from 'express';
 
@@ -23,9 +23,26 @@ export class UserController {
   }
 
   @Get('/test')
-  async test(@Res() res: Response) {
-    const result = await this.userService.test(res);
-    writeJson(res, 200, { data: result });
+  async test() {
+    throw new HttpException(
+      {
+        status: HttpStatus.FORBIDDEN,
+        error: 'This is a custom message',
+      },
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+    // const result = await this.userService.test(res);
+    // writeJson(res, 200, { data: result });
+  }
+
+  @Post('/register')
+  async register(@Res() res: Response, @Body() body: UserRegister) {
+    try {
+      await this.userService.register(body);
+      writeJson(res, 200, {});
+    } catch (e) {
+      throw new HttpException(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Post('/add')
@@ -37,7 +54,6 @@ export class UserController {
       throw new HttpException(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
   @Post('/login')
   async login(@Body() body: UserLoginDto, @Res() res: Response) {
     try {
