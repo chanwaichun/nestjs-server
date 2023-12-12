@@ -12,6 +12,7 @@ import { DbService } from '../db/db.service';
 import { UserAddDto, UserLoginDto, UserRegister } from './dto/user.dto';
 import { writeJson } from '../util';
 import { Response } from 'express';
+import { CommonResult } from '../util/commonResult';
 
 @Controller('/api/user')
 export class UserController {
@@ -24,25 +25,25 @@ export class UserController {
 
   @Get('/test')
   async test() {
-    throw new HttpException(
-      {
-        status: HttpStatus.FORBIDDEN,
-        error: 'This is a custom message',
-      },
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
+    await this.userService.test({});
+    // throw new HttpException(
+    //   {
+    //     status: HttpStatus.FORBIDDEN,
+    //     error: 'This is a custom message',
+    //   },
+    //   HttpStatus.INTERNAL_SERVER_ERROR,
+    // );
     // const result = await this.userService.test(res);
     // writeJson(res, 200, { data: result });
+    return CommonResult.failed();
+
+    // return CommonResult.success('操作成功', {});
+    // }
   }
 
   @Post('/register')
-  async register(@Res() res: Response, @Body() body: UserRegister) {
-    try {
-      await this.userService.register(body);
-      writeJson(res, 200, {});
-    } catch (e) {
-      throw new HttpException(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  async register(@Body() body: UserRegister) {
+    return await this.userService.register(body);
   }
 
   @Post('/add')
@@ -54,6 +55,7 @@ export class UserController {
       throw new HttpException(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
   @Post('/login')
   async login(@Body() body: UserLoginDto, @Res() res: Response) {
     try {

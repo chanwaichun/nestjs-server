@@ -28,10 +28,11 @@ export class AppModule {
       consumer
         .apply(
           expressjwt({ secret: secretKey, algorithms: ['HS256'] }).unless({
-            path: ['/api/user/login'],
+            path: '/api/user/register',
           }),
           testMiddleware,
         )
+
         .forRoutes({
           path: '*',
           method: RequestMethod.ALL,
