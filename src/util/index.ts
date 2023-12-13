@@ -31,6 +31,20 @@ export function writeInsertSql(obj: any) {
     replacements: Object.keys(obj).map((key) => obj[key]),
   };
 }
+export function writeUpdateSql(obj: any) {
+  return {
+    key: Object.keys(obj)
+      .reduce((prevValue, currentKey) => {
+        return obj[currentKey]
+          ? prevValue.concat(`${currentKey}=?`)
+          : prevValue;
+      }, [])
+      .join(','),
+    replacements: Object.keys(obj).reduce((prevValue, currentKey) => {
+      return obj[currentKey] ? prevValue.concat(obj[currentKey]) : prevValue;
+    }, []),
+  };
+}
 export const snowflake = new SnowflakeId({
   mid: 100,
   offset: (2023 - 1970) * 31536000 * 1000,

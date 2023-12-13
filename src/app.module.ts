@@ -27,9 +27,9 @@ export class AppModule {
     try {
       consumer
         .apply(
-          expressjwt({ secret: secretKey, algorithms: ['HS256'] }).unless({
-            path: '/api/user/register',
-          }),
+          // expressjwt({ secret: secretKey, algorithms: ['HS256'] }).unless({
+          //   ext: '/*',
+          // }),
           testMiddleware,
         )
 
