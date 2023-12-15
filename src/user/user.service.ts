@@ -1,9 +1,8 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
 import { encodeToken } from '../util/token';
-import { DbService } from '../db/db.service';
 import ApiException from '../exception/apiException';
-import { snowflake, writeInsertSql, writeUpdateSql } from '../util';
+import { snowflake } from '../util';
 import { CommonResult } from '../util/commonResult';
 import { User } from 'src/dao/user';
 import sequelize from 'src/util/sequelize';
@@ -13,11 +12,55 @@ const user = User.initModel(sequelize);
 
 @Injectable()
 export class UserService {
-  constructor(private readonly dbService: DbService) {}
+  async;
+
+  constructor() {}
+
+  async getUserInfo(userId: string) {
+    const result = await user.findOne({
+      attributes: {
+        exclude: ['password'],
+      },
+      where: {
+        userId,
+      },
+    });
+    if (!result) {
+      throw new ApiException('用户不存在,请联系管理员');
+    }
+
+    return CommonResult.success('', result);
+  }
 
   async test(body: any) {
     const result = await user.findAll();
     return CommonResult.success('', result);
+  }
+
+  async delete(userId: string) {
+    // 查找用户是否存在
+    const userOne = await user.findOne({
+      where: {
+        userId,
+      },
+    });
+    console.log(userOne);
+    if (!userOne) {
+      throw new ApiException('暂无该用户');
+    }
+    await user.destroy({
+      where: {
+        userId,
+      },
+    });
+    return CommonResult.success();
+  }
+
+  getRoleList() {
+    return CommonResult.success('', [
+      { key: '1', value: '管理员' },
+      { key: '2', value: '用户' },
+    ]);
   }
 
   // 注册
@@ -64,7 +107,7 @@ export class UserService {
     return CommonResult.success();
   }
 
-  async login(body: UserLoginDto) {
+  async login(body: UserLoginDto): Promise<CommonResult<UserLoginDto>> {
     const { userName = '', password = '' } = body;
     const result = await user.findOne({
       where: {
