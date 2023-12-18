@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
-import { encodeToken } from '../util/token';
-import ApiException from '../exception/apiException';
-import { snowflake } from '../util';
+import { encodeToken } from 'src/util/token';
+import ApiException from 'src/exception/apiException';
+import { snowflake } from 'src/util';
 import { CommonResult } from '../util/commonResult';
 import { User } from 'src/dao/user';
 import sequelize from 'src/util/sequelize';
@@ -62,7 +62,13 @@ export class UserService {
       { key: '2', value: '用户' },
     ]);
   }
-
+  async getUserList(query) {
+    return await user.findAll({
+      attributes: {
+        exclude: ['password'],
+      },
+    });
+  }
   // 注册
   async addOrUpdate(body: UserAddDto) {
     const {
@@ -120,7 +126,6 @@ export class UserService {
         ],
       },
     });
-    console.log(encodeToken(result.get({ plain: true })));
     if (result) {
       return CommonResult.success(
         null,

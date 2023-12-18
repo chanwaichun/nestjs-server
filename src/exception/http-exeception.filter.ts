@@ -3,10 +3,18 @@ import { CommonResult } from '../util/commonResult';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  catch(exception: any, host: ArgumentsHost): any {
+  async catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const res = ctx.getResponse();
-    console.log(exception);
+    const res = await ctx.getResponse();
+    console.log(exception.response);
+    res.status(exception.status || 500);
+    if (
+      Object.prototype.toString.call(exception.response) === '[object Object]'
+    ) {
+      const { message: [firstMsg = ''] = '' } = exception.response;
+      res.json(CommonResult.failed(firstMsg, exception.status));
+      return;
+    }
     res.json(CommonResult.failed(exception.response, exception.status));
   }
 }

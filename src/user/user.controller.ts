@@ -1,7 +1,33 @@
-import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Query,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
-import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiParam, ApiTags } from '@nestjs/swagger';
+
+type Pagination<T> = T & {
+  pageSize: number;
+  pageNum: number;
+  total: number;
+};
+
+@ApiHeader({
+  name: 'Authorization',
+  description: 'token',
+  required: false,
+  schema: {
+    type: 'string',
+    example: null,
+    default: '',
+  },
+})
 @ApiTags('用户管理')
 @Controller('/api/user')
 export class UserController {
@@ -13,23 +39,33 @@ export class UserController {
   async test() {
     return await this.userService.test({});
   }
+
   @Get('/delete')
   async delete(@Query() query: UserAddDto) {
     console.log(query);
     return await this.userService.delete(query.userId);
   }
+
   @Get('/info')
   async getUserInfo(@Query() query: UserAddDto) {
     return await this.userService.getUserInfo(query.userId);
   }
+
   @Get('/get/role/list')
   getRoleList() {
     return this.userService.getRoleList();
   }
+
   @Post('/addOrUpdate')
   async addOrUpdate(@Body() body: UserAddDto) {
     return await this.userService.addOrUpdate(body);
   }
+
+  @Get('/get/user/list')
+  async getUserList(@Query() query: Pagination<UserLoginDto>) {
+    return await this.userService.getUserList(query);
+  }
+
   @ApiParam({
     name: 'userName',
     type: String,
