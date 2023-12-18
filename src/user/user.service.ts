@@ -7,6 +7,7 @@ import { CommonResult } from '../util/commonResult';
 import { User } from 'src/dao/user';
 import sequelize from 'src/util/sequelize';
 import { Op } from 'sequelize';
+import { commonPage } from '../util/commonPage';
 
 const user = User.initModel(sequelize);
 
@@ -62,13 +63,22 @@ export class UserService {
       { key: '2', value: '用户' },
     ]);
   }
+
   async getUserList(query) {
-    return await user.findAll({
-      attributes: {
-        exclude: ['password'],
+    const { pageSize, pageNum } = query;
+    console.log(pageSize, pageNum);
+    const result = await commonPage<any>(
+      user,
+      { pageNum, pageSize },
+      {
+        attributes: {
+          exclude: ['password'],
+        },
       },
-    });
+    );
+    return CommonResult.success('', result);
   }
+
   // 注册
   async addOrUpdate(body: UserAddDto) {
     const {

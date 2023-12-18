@@ -61,7 +61,7 @@ export class UserController {
     return await this.userService.addOrUpdate(body);
   }
 
-  @Get('/get/user/list')
+  @Get('/get/list')
   async getUserList(@Query() query: Pagination<UserLoginDto>) {
     return await this.userService.getUserList(query);
   }

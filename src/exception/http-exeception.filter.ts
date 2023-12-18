@@ -1,4 +1,9 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpStatus,
+} from '@nestjs/common';
 import { CommonResult } from '../util/commonResult';
 
 @Catch()
@@ -9,7 +14,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     console.log(exception.response);
     res.status(exception.status || 500);
     if (
-      Object.prototype.toString.call(exception.response) === '[object Object]'
+      Object.prototype.toString.call(exception.response) ===
+        '[object Object]' &&
+      exception.status === HttpStatus.BAD_REQUEST
     ) {
       const { message: [firstMsg = ''] = '' } = exception.response;
       res.json(CommonResult.failed(firstMsg, exception.status));
