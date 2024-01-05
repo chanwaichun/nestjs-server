@@ -3,6 +3,7 @@ import {
   Post,
   Body,
   Get,
+  Headers,
   Param,
   Query,
   HttpCode,
@@ -47,8 +48,12 @@ export class UserController {
   }
 
   @Get('/info')
-  async getUserInfo(@Query() query: UserAddDto) {
-    return await this.userService.getUserInfo(query.userId);
+  async getUserInfo(@Query() query: UserAddDto, @Headers() headers: any) {
+    console.log(headers);
+    return await this.userService.getUserInfo(
+      query.userId,
+      headers.authorization,
+    );
   }
 
   @Get('/get/role/list')

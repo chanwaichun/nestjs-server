@@ -17,5 +17,10 @@ export async function commonPage<T>(
   const currentOptions = { ...pageOptions, ...options };
   const total = await db.count(currentOptions);
   const records: any = await db.findAll(currentOptions);
-  return { pageNum, pageSize, total, records };
+  return {
+    pageNum: Number(pageNum),
+    pageSize: Number(pageSize),
+    total,
+    records,
+  };
 }

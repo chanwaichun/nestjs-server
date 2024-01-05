@@ -26,7 +26,6 @@ async function bootstrap() {
 
   // app.useGlobalFilters(new GlobalExceptionFilter());
   app.use(function (req, res, next) {
-    console.log('eeeee');
     console.log('res here');
     next();
   });

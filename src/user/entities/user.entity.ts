@@ -27,7 +27,7 @@ export class User {
     description: '用户密码',
   })
   password: string;
-
   roleId: string;
   userImg: string;
+  dataStatus: string;
 }

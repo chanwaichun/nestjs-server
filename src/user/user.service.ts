@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
-import { encodeToken } from 'src/util/token';
+import { decodeToken, encodeToken } from 'src/util/token';
 import ApiException from 'src/exception/apiException';
 import { snowflake } from 'src/util';
 import { CommonResult } from '../util/commonResult';
@@ -17,7 +17,13 @@ export class UserService {
 
   constructor() {}
 
-  async getUserInfo(userId: string) {
+  async getUserInfo(id: string, authorization: string) {
+    const res: any = await decodeToken(authorization);
+    console.log(res);
+    const userId = id || res.userId;
+    if (!userId) {
+      throw new ApiException('缺少userId');
+    }
     const result = await user.findOne({
       attributes: {
         exclude: ['password'],
@@ -137,10 +143,9 @@ export class UserService {
       },
     });
     if (result) {
-      return CommonResult.success(
-        null,
-        encodeToken(result.get({ plain: true })),
-      );
+      const plain = await result.get({ plain: true });
+      console.log(plain);
+      return CommonResult.success(null, encodeToken(plain));
     } else {
       throw new ApiException('账号或密码不正确');
     }

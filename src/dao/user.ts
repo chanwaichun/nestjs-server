@@ -8,11 +8,12 @@ export interface UserAttributes {
   password?: string;
   roleId?: string;
   userImg?: string;
+  dataStatus?: string;
 }
 
 export type UserPk = "userId" | "phone";
 export type UserId = User[UserPk];
-export type UserOptionalAttributes = "userName" | "password" | "roleId" | "userImg";
+export type UserOptionalAttributes = "userName" | "password" | "roleId" | "userImg" | "dataStatus";
 export type UserCreationAttributes = Optional<UserAttributes, UserOptionalAttributes>;
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
@@ -22,6 +23,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   password?: string;
   roleId?: string;
   userImg?: string;
+  dataStatus?: string;
 
 
   static initModel(sequelize: Sequelize.Sequelize): typeof User {
@@ -51,6 +53,11 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     userImg: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    dataStatus: {
+      type: DataTypes.STRING(2),
+      allowNull: true,
+      defaultValue: "1"
     }
   }, {
     sequelize,

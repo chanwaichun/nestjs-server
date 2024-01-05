@@ -9,6 +9,10 @@ import { testMiddleware } from './middleware/test.middleware';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './exception/http-exeception.filter';
 import { DbModule } from './db/db.module';
+import { Request } from 'express';
+import * as process from 'process';
+
+const whiteList = ['/api/user/login'];
 
 @Module({
   imports: [UserModule, DbModule],
@@ -27,9 +31,12 @@ export class AppModule {
     try {
       consumer
         .apply(
-          // expressjwt({ secret: secretKey, algorithms: ['HS256'] }).unless({
-          //   ext: '/*',
-          // }),
+          expressjwt({ secret: secretKey, algorithms: ['HS256'] }).unless({
+            custom: (req: Request) => {
+              // return whiteList.includes(req.path);
+              return true;
+            },
+          }),
           testMiddleware,
         )
 
