@@ -4,16 +4,13 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { UserService } from './user/user.service';
 import { expressjwt } from 'express-jwt';
-import { secretKey } from './util/constant';
+import { SECRET_KEY, WHITE_LIST } from './util/constant';
 import { testMiddleware } from './middleware/test.middleware';
+import { authorizeMiddleware } from './middleware/authorize.middleware';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './exception/http-exeception.filter';
 import { DbModule } from './db/db.module';
 import { Request } from 'express';
-import * as process from 'process';
-
-const whiteList = ['/api/user/login'];
-
 @Module({
   imports: [UserModule, DbModule],
   controllers: [AppController],
@@ -31,21 +28,20 @@ export class AppModule {
     try {
       consumer
         .apply(
-          expressjwt({ secret: secretKey, algorithms: ['HS256'] }).unless({
+          expressjwt({ secret: SECRET_KEY, algorithms: ['HS256'] }).unless({
             custom: (req: Request) => {
-              // return whiteList.includes(req.path);
-              return true;
+              return WHITE_LIST.includes(req.path);
             },
           }),
+          authorizeMiddleware,
           testMiddleware,
         )
-
         .forRoutes({
           path: '*',
           method: RequestMethod.ALL,
         });
     } catch (e) {
-      // console.log(e);
+      console.log(e, 111111111);
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
 import { decodeToken, encodeToken } from 'src/util/token';
 import ApiException from 'src/exception/apiException';
@@ -19,7 +19,7 @@ export class UserService {
 
   async getUserInfo(id: string, authorization: string) {
     const res: any = await decodeToken(authorization);
-    console.log(res);
+    console.log(new Date(res.expiredAt).getTime());
     const userId = id || res.userId;
     if (!userId) {
       throw new ApiException('缺少userId');
