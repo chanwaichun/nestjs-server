@@ -8,6 +8,9 @@ import { User } from 'src/dao/user';
 import sequelize from 'src/util/sequelize';
 import { Op } from 'sequelize';
 import { commonPage } from '../util/commonPage';
+import { join } from 'path';
+import { createWriteStream, existsSync } from 'fs';
+import * as path from 'path';
 
 const user = User.initModel(sequelize);
 
@@ -16,6 +19,22 @@ export class UserService {
   async;
 
   constructor() {}
+
+  async upload(file: any) {
+    const publicPath = path.join(__dirname, '../..', 'public/');
+    console.log(publicPath, __dirname);
+    const fileName = Buffer.from(file.originalname, 'latin1').toString('utf-8');
+    if (!existsSync(path.join(publicPath, fileName))) {
+      const writeStream = createWriteStream(
+        join(__dirname, '../..', 'public/' + fileName),
+        {},
+      );
+
+      writeStream.write(file.buffer);
+    }
+
+    return CommonResult.success('', '/static/' + fileName);
+  }
 
   async getUserInfo(id: string, authorization: string) {
     const res: any = await decodeToken(authorization);

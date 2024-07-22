@@ -8,10 +8,15 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  Req,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
 import { ApiHeader, ApiParam, ApiTags } from '@nestjs/swagger';
+import fs from 'fs';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 type Pagination<T> = T & {
   pageSize: number;
@@ -34,6 +39,16 @@ type Pagination<T> = T & {
 export class UserController {
   constructor(private readonly userService: UserService) {
     console.log(this);
+  }
+
+  @Post('/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(@UploadedFile() file: any) {
+    console.log(file);
+
+    // const file = req.formData;
+    // fs.writeFileSync('./static/' + file.name, file.type);
+    return await this.userService.upload(file);
   }
 
   @Get('/test')

@@ -30,6 +30,7 @@ export class AppModule {
         .apply(
           expressjwt({ secret: SECRET_KEY, algorithms: ['HS256'] }).unless({
             custom: (req: Request) => {
+              console.log(req.path);
               return WHITE_LIST.includes(req.path);
             },
           }),

@@ -7,6 +7,7 @@ export const authorizeMiddleware = function (
   res: Response,
   next: NextFunction,
 ) {
+  console.log(req);
   if (WHITE_LIST.includes(req.path)) {
     next();
     return;
