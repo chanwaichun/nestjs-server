@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
 import { decodeToken, encodeToken } from 'src/util/token';
 import ApiException from 'src/exception/apiException';
@@ -16,10 +16,9 @@ const user = User.initModel(sequelize);
 
 @Injectable()
 export class UserService {
-  async;
-
   constructor() {}
 
+  // 上传
   async upload(file: any) {
     const publicPath = path.join(__dirname, '../..', 'public/');
     console.log(publicPath, __dirname);
@@ -36,6 +35,7 @@ export class UserService {
     return CommonResult.success('', '/static/' + fileName);
   }
 
+  // 获取用户信息
   async getUserInfo(id: string, authorization: string) {
     const res: any = await decodeToken(authorization);
     console.log(new Date(res.expiredAt).getTime());
@@ -58,11 +58,12 @@ export class UserService {
     return CommonResult.success('', result);
   }
 
-  async test(body: any) {
+  async test() {
     const result = await user.findAll();
     return CommonResult.success('', result);
   }
 
+  // 删除用户
   async delete(userId: string) {
     // 查找用户是否存在
     const userOne = await user.findOne({

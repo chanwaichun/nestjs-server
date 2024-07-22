@@ -16,25 +16,13 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
-  // app.use((req, res, next) => {
-  //   try {
-  //     expressjwt({ secret: secretKey, algorithms: ['HS256'] }).unless({
-  //       path: ['/api/user/login'],
-  //     });
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // });
-
-  // app.useGlobalFilters(new GlobalExceptionFilter());
   app.use(function (req, res, next) {
     console.log('res here');
     next();
   });
   app.useGlobalPipes(new ValidationPipe());
-  console.log(join(__dirname, '..', 'public'));
   app.useStaticAssets(join(__dirname, '..', 'public'), { prefix: '/static' });
+  console.log('localhost:3000', process);
   await app.listen(3000);
 }
 

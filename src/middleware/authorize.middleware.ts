@@ -7,12 +7,17 @@ export const authorizeMiddleware = function (
   res: Response,
   next: NextFunction,
 ) {
-  console.log(req);
+  console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV === 'development') {
+    next();
+    return;
+  }
+  // 如果是白名单就放行
   if (WHITE_LIST.includes(req.path)) {
     next();
     return;
   }
-  console.log(req, res);
+  // 如果没有token
   if (!req.headers.authorization) {
     throw new UnauthorizedException();
   }

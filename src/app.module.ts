@@ -31,7 +31,10 @@ export class AppModule {
           expressjwt({ secret: SECRET_KEY, algorithms: ['HS256'] }).unless({
             custom: (req: Request) => {
               console.log(req.path);
-              return WHITE_LIST.includes(req.path);
+              return (
+                process.env.NODE_ENV === 'development' ||
+                WHITE_LIST.includes(req.path)
+              );
             },
           }),
           authorizeMiddleware,

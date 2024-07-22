@@ -1,14 +1,14 @@
 import type { Sequelize } from "sequelize";
-import { Car as _Car } from "./car";
-import type { CarAttributes, CarCreationAttributes } from "./car";
-import { Label as _Label } from "./label";
-import type { LabelAttributes, LabelCreationAttributes } from "./label";
-import { QuestionPracticeDetail as _QuestionPracticeDetail } from "./question_practice_detail";
-import type { QuestionPracticeDetailAttributes, QuestionPracticeDetailCreationAttributes } from "./question_practice_detail";
-import { User as _User } from "./user";
-import type { UserAttributes, UserCreationAttributes } from "./user";
-import { UserProfile as _UserProfile } from "./user_profile";
-import type { UserProfileAttributes, UserProfileCreationAttributes } from "./user_profile";
+import { Car as _Car } from "./Car";
+import type { CarAttributes, CarCreationAttributes } from "./Car";
+import { Label as _Label } from "./Label";
+import type { LabelAttributes, LabelCreationAttributes } from "./Label";
+import { QuestionPracticeDetail as _QuestionPracticeDetail } from "./QuestionPracticeDetail";
+import type { QuestionPracticeDetailAttributes, QuestionPracticeDetailCreationAttributes } from "./QuestionPracticeDetail";
+import { User as _User } from "./User";
+import type { UserAttributes, UserCreationAttributes } from "./User";
+import { UserProfile as _UserProfile } from "./UserProfile";
+import type { UserProfileAttributes, UserProfileCreationAttributes } from "./UserProfile";
 
 export {
   _Car as Car,

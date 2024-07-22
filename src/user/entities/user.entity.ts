@@ -29,5 +29,4 @@ export class User {
   password: string;
   roleId: string;
   userImg: string;
-  dataStatus: string;
 }

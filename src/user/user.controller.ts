@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
-import { ApiHeader, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import fs from 'fs';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -53,7 +53,7 @@ export class UserController {
 
   @Get('/test')
   async test() {
-    return await this.userService.test({});
+    return await this.userService.test();
   }
 
   @Get('/delete')
@@ -81,6 +81,12 @@ export class UserController {
     return await this.userService.addOrUpdate(body);
   }
 
+  @ApiQuery({ name: 'pageSize', type: String, description: '页数' })
+  @ApiQuery({
+    name: 'pageNum',
+    type: String,
+    description: '页码',
+  })
   @Get('/get/list')
   async getUserList(@Query() query: Pagination<UserLoginDto>) {
     return await this.userService.getUserList(query);

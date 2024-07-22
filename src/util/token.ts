@@ -2,11 +2,9 @@ import { sign, verify } from 'jsonwebtoken';
 import { SECRET_KEY, EXPIRES_IN } from './constant';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
+//解密token
 export async function decodeToken(results: string) {
   try {
-    // if (!results) {
-    //   throw new HttpException('token', HttpStatus.UNAUTHORIZED);
-    // }
     const res = await verify(results.replace('Bearer ', ''), SECRET_KEY);
     return res;
   } catch (e) {
@@ -17,7 +15,7 @@ export async function decodeToken(results: string) {
     throw new Error(e);
   }
 }
-
+// 加密token
 export function encodeToken(results) {
   try {
     return sign(results, SECRET_KEY, {

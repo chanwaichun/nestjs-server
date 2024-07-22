@@ -21,29 +21,6 @@ export function writeJson(
   };
   res.status(status);
   res.send(defaultResult);
-  // res.send();
-}
-
-export function writeInsertSql(obj: any) {
-  return {
-    key: '(' + Object.keys(obj).join(',') + ')',
-    value: '(' + Object.keys(obj).map(() => '?') + ')',
-    replacements: Object.keys(obj).map((key) => obj[key]),
-  };
-}
-export function writeUpdateSql(obj: any) {
-  return {
-    key: Object.keys(obj)
-      .reduce((prevValue, currentKey) => {
-        return obj[currentKey]
-          ? prevValue.concat(`${currentKey}=?`)
-          : prevValue;
-      }, [])
-      .join(','),
-    replacements: Object.keys(obj).reduce((prevValue, currentKey) => {
-      return obj[currentKey] ? prevValue.concat(obj[currentKey]) : prevValue;
-    }, []),
-  };
 }
 export const snowflake = new SnowflakeId({
   mid: 100,
