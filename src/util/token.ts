@@ -1,6 +1,9 @@
 import { sign, verify } from 'jsonwebtoken';
-import { SECRET_KEY, EXPIRES_IN } from './constant';
-import { UnauthorizedException } from '../exception/apiException';
+import { EXPIRES_IN, SECRET_KEY } from './constant';
+import {
+  FailException,
+  UnauthorizedException,
+} from '../exception/apiException';
 
 //解密token
 export async function decodeToken(results: string) {
@@ -10,9 +13,11 @@ export async function decodeToken(results: string) {
     if (new Date(e.expiredAt).getTime() < new Date().getTime()) {
       throw new UnauthorizedException();
     }
-    throw new Error(e);
+    console.log(e);
+    throw new FailException('jwt解析出错');
   }
 }
+
 // 加密token
 export function encodeToken(results) {
   try {
@@ -21,6 +26,7 @@ export function encodeToken(results) {
       algorithm: 'HS256',
     });
   } catch (e) {
-    throw new Error(e);
+    console.log(e);
+    throw new FailException('jwt加密出错');
   }
 }

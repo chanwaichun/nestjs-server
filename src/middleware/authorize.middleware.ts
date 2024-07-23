@@ -8,10 +8,10 @@ export const authorizeMiddleware = function (
   next: NextFunction,
 ) {
   // 开发环境放行
-  if (process.env.NODE_ENV === 'development') {
-    next();
-    return;
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  //   next();
+  //   return;
+  // }
   // 如果是白名单就放行
   if (WHITE_LIST.includes(req.path)) {
     next();

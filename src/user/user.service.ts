@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
 import { decodeToken, encodeToken } from 'src/util/token';
 import { FailException } from 'src/exception/apiException';
-import { getSnowflakeId } from 'src/util';
+import { getSnowflakeId, getTime } from 'src/util';
 import { CommonResult } from '../util/commonResult';
 import { User, UserAttributes, UserPk } from 'src/dao/User';
 import sequelize from 'src/util/sequelize';
@@ -162,6 +162,7 @@ export class UserService {
           password,
           roleId,
           userImg,
+          updateTime: getTime(),
         },
         { where: { userId } },
       );
@@ -173,6 +174,8 @@ export class UserService {
         password,
         roleId,
         userImg,
+        createTime: getTime(),
+        updateTime: getTime(),
       });
     }
     // console.log(result);

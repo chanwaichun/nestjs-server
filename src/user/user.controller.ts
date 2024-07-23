@@ -12,9 +12,9 @@ import {
 import { UserService } from './user.service';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiHeader,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -28,17 +28,8 @@ type Pagination<T> = T & {
 };
 type UserIdOnly = Pick<UserAttributes, UserPk>;
 
-@ApiHeader({
-  name: 'Authorization',
-  description: 'token',
-  required: false,
-  schema: {
-    type: 'string',
-    example: null,
-    default: '',
-  },
-})
 @ApiTags('用户管理')
+@ApiBearerAuth()
 @Controller('/api/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

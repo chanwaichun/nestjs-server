@@ -13,6 +13,7 @@ async function bootstrap() {
     .setDescription('这个接口文档我是自动生成的')
     .setVersion('1.0')
     .addTag('blog')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
@@ -22,7 +23,7 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
   app.useStaticAssets(join(__dirname, '..', 'public'), { prefix: '/static' });
-  console.log('localhost:3000', process);
+  console.log('localhost:3000');
   await app.listen(3000);
 }
 
