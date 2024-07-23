@@ -3,8 +3,8 @@ import { DataTypes, Model, Optional } from 'sequelize';
 
 export interface QuestionPracticeDetailAttributes {
   id: number;
-  device_id: number;
-  question_id: number;
+  deviceId: number;
+  questionId: number;
   result: string;
 }
 
@@ -14,8 +14,8 @@ export type QuestionPracticeDetailCreationAttributes = QuestionPracticeDetailAtt
 
 export class QuestionPracticeDetail extends Model<QuestionPracticeDetailAttributes, QuestionPracticeDetailCreationAttributes> implements QuestionPracticeDetailAttributes {
   id!: number;
-  device_id!: number;
-  question_id!: number;
+  deviceId!: number;
+  questionId!: number;
   result!: string;
 
 
@@ -26,13 +26,15 @@ export class QuestionPracticeDetail extends Model<QuestionPracticeDetailAttribut
       allowNull: false,
       primaryKey: true
     },
-    device_id: {
+    deviceId: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      field: 'device_id'
     },
-    question_id: {
+    questionId: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      field: 'question_id'
     },
     result: {
       type: DataTypes.STRING(32),

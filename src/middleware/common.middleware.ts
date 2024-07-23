@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
-export const testMiddleware = function (
+export const commonMiddleware = function (
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  console.log(req.statusCode, '222222');
+  res.status(200);
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', '*');
   res.header('Access-Control-Allow-Methods', '*');

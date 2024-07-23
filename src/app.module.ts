@@ -5,10 +5,10 @@ import { UserModule } from './user/user.module';
 import { UserService } from './user/user.service';
 import { expressjwt } from 'express-jwt';
 import { SECRET_KEY, WHITE_LIST } from './util/constant';
-import { testMiddleware } from './middleware/test.middleware';
+import { commonMiddleware } from './middleware/common.middleware';
 import { authorizeMiddleware } from './middleware/authorize.middleware';
 import { APP_FILTER } from '@nestjs/core';
-import { GlobalExceptionFilter } from './exception/http-exeception.filter';
+import { GlobalExceptionFilter } from './exception/httpExeception.filter';
 import { DbModule } from './db/db.module';
 import { Request } from 'express';
 @Module({
@@ -30,7 +30,6 @@ export class AppModule {
         .apply(
           expressjwt({ secret: SECRET_KEY, algorithms: ['HS256'] }).unless({
             custom: (req: Request) => {
-              console.log(req.path);
               return (
                 process.env.NODE_ENV === 'development' ||
                 WHITE_LIST.includes(req.path)
@@ -38,7 +37,7 @@ export class AppModule {
             },
           }),
           authorizeMiddleware,
-          testMiddleware,
+          commonMiddleware,
         )
         .forRoutes({
           path: '*',

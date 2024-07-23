@@ -1,27 +1,20 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { CommonResult } from '../util/commonResult';
-
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   async catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = await ctx.getResponse();
     console.log(exception);
-    const currentStatus = exception.status || 500;
-    res.status(currentStatus);
-    if (currentStatus === 401) {
-      res.json(CommonResult.failed('登录已过期', currentStatus));
+    res.status(200);
+    if (exception.status === 401) {
+      res.json(CommonResult.failed('登录已过期', exception.status));
       return;
     }
+    const currentStatus = 500;
+
     if (
-      Object.prototype.toString.call(exception.response) ===
-        '[object Object]' &&
-      currentStatus === HttpStatus.BAD_REQUEST
+      Object.prototype.toString.call(exception.response) === '[object Object]'
     ) {
       const { message: [firstMsg = ''] = '' } = exception.response;
       res.json(CommonResult.failed(firstMsg, currentStatus));

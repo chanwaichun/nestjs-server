@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import UnauthorizedException from '../exception/unauthorizedException.ts';
+import { UnauthorizedException } from '../exception/apiException';
 import { WHITE_LIST } from '../util/constant';
 
 export const authorizeMiddleware = function (
@@ -7,7 +7,7 @@ export const authorizeMiddleware = function (
   res: Response,
   next: NextFunction,
 ) {
-  console.log(process.env.NODE_ENV);
+  // 开发环境放行
   if (process.env.NODE_ENV === 'development') {
     next();
     return;

@@ -3,31 +3,31 @@ import { DataTypes, Model, Optional } from 'sequelize';
 
 export interface UserProfileAttributes {
   id: number;
-  device_id: number;
+  deviceId: number;
   gender: string;
   age?: number;
   university: string;
   gpa?: number;
-  active_days_within_30?: number;
-  question_cnt?: number;
-  answer_cnt?: number;
+  activeDaysWithin30?: number;
+  questionCnt?: number;
+  answerCnt?: number;
 }
 
 export type UserProfilePk = "id";
 export type UserProfileId = UserProfile[UserProfilePk];
-export type UserProfileOptionalAttributes = "age" | "gpa" | "active_days_within_30" | "question_cnt" | "answer_cnt";
+export type UserProfileOptionalAttributes = "age" | "gpa" | "activeDaysWithin30" | "questionCnt" | "answerCnt";
 export type UserProfileCreationAttributes = Optional<UserProfileAttributes, UserProfileOptionalAttributes>;
 
 export class UserProfile extends Model<UserProfileAttributes, UserProfileCreationAttributes> implements UserProfileAttributes {
   id!: number;
-  device_id!: number;
+  deviceId!: number;
   gender!: string;
   age?: number;
   university!: string;
   gpa?: number;
-  active_days_within_30?: number;
-  question_cnt?: number;
-  answer_cnt?: number;
+  activeDaysWithin30?: number;
+  questionCnt?: number;
+  answerCnt?: number;
 
 
   static initModel(sequelize: Sequelize.Sequelize): typeof UserProfile {
@@ -37,9 +37,10 @@ export class UserProfile extends Model<UserProfileAttributes, UserProfileCreatio
       allowNull: false,
       primaryKey: true
     },
-    device_id: {
+    deviceId: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      field: 'device_id'
     },
     gender: {
       type: DataTypes.STRING(14),
@@ -57,17 +58,20 @@ export class UserProfile extends Model<UserProfileAttributes, UserProfileCreatio
       type: DataTypes.FLOAT,
       allowNull: true
     },
-    active_days_within_30: {
+    activeDaysWithin30: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      field: 'active_days_within_30'
     },
-    question_cnt: {
+    questionCnt: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      field: 'question_cnt'
     },
-    answer_cnt: {
+    answerCnt: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      field: 'answer_cnt'
     }
   }, {
     sequelize,

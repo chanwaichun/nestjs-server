@@ -8,11 +8,13 @@ export interface UserAttributes {
   password?: string;
   roleId?: string;
   userImg?: string;
+  createTime?: Date;
+  updateTime?: Date;
 }
 
-export type UserPk = "userId" | "phone";
+export type UserPk = "userId";
 export type UserId = User[UserPk];
-export type UserOptionalAttributes = "userName" | "password" | "roleId" | "userImg";
+export type UserOptionalAttributes = "userName" | "password" | "roleId" | "userImg" | "createTime" | "updateTime";
 export type UserCreationAttributes = Optional<UserAttributes, UserOptionalAttributes>;
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
@@ -22,6 +24,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   password?: string;
   roleId?: string;
   userImg?: string;
+  createTime?: Date;
+  updateTime?: Date;
 
 
   static initModel(sequelize: Sequelize.Sequelize): typeof User {
@@ -29,16 +33,17 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     userId: {
       type: DataTypes.STRING(20),
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      field: 'user_id'
     },
     userName: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: true,
+      field: 'user_name'
     },
     phone: {
       type: DataTypes.STRING(255),
-      allowNull: false,
-      primaryKey: true
+      allowNull: false
     },
     password: {
       type: DataTypes.STRING(255),
@@ -46,11 +51,24 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     },
     roleId: {
       type: DataTypes.STRING(20),
-      allowNull: true
+      allowNull: true,
+      field: 'role_id'
     },
     userImg: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: true,
+      field: 'user_img'
+    },
+    createTime: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'create_time'
+    },
+    updateTime: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      comment: "\r\n",
+      field: 'update_time'
     }
   }, {
     sequelize,
@@ -62,8 +80,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "userId" },
-          { name: "phone" },
+          { name: "user_id" },
         ]
       },
     ]

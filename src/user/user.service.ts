@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { UserAddDto, UserLoginDto } from './dto/user.dto';
 import { decodeToken, encodeToken } from 'src/util/token';
-import ApiException from 'src/exception/apiException';
-import { snowflake } from 'src/util';
+import { FailException } from 'src/exception/apiException';
+import { getSnowflakeId } from 'src/util';
 import { CommonResult } from '../util/commonResult';
-import { User } from 'src/dao/user';
+import { User, UserAttributes, UserPk } from 'src/dao/User';
 import sequelize from 'src/util/sequelize';
 import { Op } from 'sequelize';
 import { commonPage } from '../util/commonPage';
+import * as path from 'path';
 import { join } from 'path';
 import { createWriteStream, existsSync } from 'fs';
-import * as path from 'path';
 
 const user = User.initModel(sequelize);
 
@@ -20,28 +20,37 @@ export class UserService {
 
   // 上传
   async upload(file: any) {
-    const publicPath = path.join(__dirname, '../..', 'public/');
-    console.log(publicPath, __dirname);
-    const fileName = Buffer.from(file.originalname, 'latin1').toString('utf-8');
-    if (!existsSync(path.join(publicPath, fileName))) {
-      const writeStream = createWriteStream(
-        join(__dirname, '../..', 'public/' + fileName),
-        {},
+    try {
+      const publicPath = path.join(__dirname, '../..', 'public/');
+      // 拿buffer里面的originalName
+      const fileName = Buffer.from(file.originalname, 'latin1').toString(
+        'utf-8',
       );
-
-      writeStream.write(file.buffer);
+      if (!existsSync(path.join(publicPath, fileName))) {
+        // 创造一个读写流
+        const writeStream = createWriteStream(
+          join(__dirname, '../..', 'public/' + fileName),
+          {},
+        );
+        // 把buffer写进去
+        writeStream.write(file.buffer);
+      }
+      return '/static/' + fileName;
+    } catch (e) {
+      throw new FailException('上传失败');
     }
-
-    return CommonResult.success('', '/static/' + fileName);
   }
 
-  // 获取用户信息
+  /**
+   *
+   * @param id
+   * @param authorization
+   */
   async getUserInfo(id: string, authorization: string) {
     const res: any = await decodeToken(authorization);
-    console.log(new Date(res.expiredAt).getTime());
     const userId = id || res.userId;
     if (!userId) {
-      throw new ApiException('缺少userId');
+      throw new FailException('缺少userId');
     }
     const result = await user.findOne({
       attributes: {
@@ -52,7 +61,7 @@ export class UserService {
       },
     });
     if (!result) {
-      throw new ApiException('用户不存在,请联系管理员');
+      throw new FailException('用户不存在,请联系管理员');
     }
 
     return CommonResult.success('', result);
@@ -71,9 +80,8 @@ export class UserService {
         userId,
       },
     });
-    console.log(userOne);
     if (!userOne) {
-      throw new ApiException('暂无该用户');
+      throw new FailException('暂无该用户');
     }
     await user.destroy({
       where: {
@@ -83,6 +91,9 @@ export class UserService {
     return CommonResult.success();
   }
 
+  /**
+   * 获取角色列表
+   */
   getRoleList() {
     return CommonResult.success('', [
       { key: '1', value: '管理员' },
@@ -90,9 +101,12 @@ export class UserService {
     ]);
   }
 
+  /**
+   * 获取用户列表
+   * @param query
+   */
   async getUserList(query) {
     const { pageSize, pageNum } = query;
-    console.log(pageSize, pageNum);
     const result = await commonPage<any>(
       user,
       { pageNum, pageSize },
@@ -103,6 +117,22 @@ export class UserService {
       },
     );
     return CommonResult.success('', result);
+  }
+
+  async updateTarget(
+    userId: string,
+    userAttr: Partial<Omit<UserAttributes, UserPk>>,
+  ) {
+    const result = await user.update(
+      { ...userAttr },
+      {
+        where: {
+          userId,
+        },
+      },
+    );
+    console.log(result);
+    return CommonResult.success();
   }
 
   // 注册
@@ -116,13 +146,13 @@ export class UserService {
       userImg = null,
     }: any = body;
     if (!phone) {
-      throw new ApiException('请输入手机号码');
+      throw new FailException('请输入手机号码');
     }
     if (!userName) {
-      throw new ApiException('请输入用户名称');
+      throw new FailException('请输入用户名称');
     }
     if (!password) {
-      throw new ApiException('请输入密码');
+      throw new FailException('请输入密码');
     }
     if (userId) {
       await user.update(
@@ -137,7 +167,7 @@ export class UserService {
       );
     } else {
       await user.upsert({
-        userId: snowflake.generate(),
+        userId: getSnowflakeId(),
         userName,
         phone,
         password,
@@ -164,10 +194,9 @@ export class UserService {
     });
     if (result) {
       const plain = await result.get({ plain: true });
-      console.log(plain);
       return CommonResult.success(null, encodeToken(plain));
     } else {
-      throw new ApiException('账号或密码不正确');
+      throw new FailException('账号或密码不正确');
     }
   }
 }
