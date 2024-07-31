@@ -135,6 +135,27 @@ export class UserService {
     return CommonResult.success();
   }
 
+  async register(body: UserAddDto) {
+    const {
+      userName = null,
+      phone = null,
+      password = null,
+      roleId = null,
+      userImg = null,
+    }: any = body;
+    await user.upsert({
+      userId: getSnowflakeId(),
+      userName,
+      phone,
+      password,
+      roleId,
+      userImg,
+      createTime: getTime(),
+      updateTime: getTime(),
+    });
+    return CommonResult.success();
+  }
+
   // 注册
   async addOrUpdate(body: UserAddDto) {
     const {

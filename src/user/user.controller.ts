@@ -15,6 +15,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiOperation,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -86,12 +87,19 @@ export class UserController {
     return await this.userService.addOrUpdate(body);
   }
 
+  @ApiOperation({ tags: ['注册'], description: '注册' })
+  @Post('/register')
+  async register(@Body() body: UserAddDto) {
+    return await this.userService.register(body);
+  }
+
   @ApiQuery({ name: 'pageSize', type: String, description: '页数' })
   @ApiQuery({
     name: 'pageNum',
     type: String,
     description: '页码',
   })
+  @ApiOperation({ tags: ['获取用户列表'], description: '获取用户列表' })
   @Get('/get/list')
   async getUserList(@Query() query: Pagination<UserLoginDto>) {
     return await this.userService.getUserList(query);
