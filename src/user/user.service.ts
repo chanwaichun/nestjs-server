@@ -53,7 +53,7 @@ export class UserService {
     if (!userId) {
       throw new FailException('缺少userId');
     }
-    const result = await this.user.findOne({
+    const result: Partial<UserAttributes> = await this.user.findOne({
       attributes: {
         exclude: ['password'],
       },
@@ -65,7 +65,7 @@ export class UserService {
       throw new FailException('用户不存在,请联系管理员');
     }
 
-    return CommonResult.success(result);
+    return CommonResult.success<Partial<UserAttributes>>(result);
   }
 
   async test() {
@@ -96,7 +96,7 @@ export class UserService {
    * 获取角色列表
    */
   getRoleList() {
-    return CommonResult.success('', [
+    return CommonResult.success([
       { key: '1', value: '管理员' },
       { key: '2', value: '用户' },
     ]);
@@ -117,7 +117,7 @@ export class UserService {
         },
       },
     );
-    return CommonResult.success('', result);
+    return CommonResult.success(result);
   }
 
   async updateTarget(
@@ -219,7 +219,7 @@ export class UserService {
     });
     if (result) {
       const plain = await result.get({ plain: true });
-      return CommonResult.success(null, encodeToken(plain));
+      return CommonResult.success(encodeToken(plain));
     } else {
       throw new FailException('账号或密码不正确');
     }

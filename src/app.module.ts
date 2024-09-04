@@ -11,8 +11,10 @@ import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './exception/httpExeception.filter';
 import { DbModule } from './db/db.module';
 import { Request } from 'express';
+import { SubjectModule } from './subject/subject.module';
+import { SubjectModule } from './subject/subject.module';
 @Module({
-  imports: [UserModule, DbModule],
+  imports: [UserModule, DbModule, SubjectModule],
   controllers: [AppController],
   providers: [
     AppService,

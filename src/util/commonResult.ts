@@ -9,20 +9,29 @@ export class CommonResult<T> {
     this.data = data;
   }
 
-  public static success(data?): CommonResult<any>;
-
-  public static success(msg?: string, data?): CommonResult<any>;
-  public static success(msg?: any, data?: any): CommonResult<any> {
-
-    if (arguments.length === 1) {
-      return new CommonResult(200, '操作成功', arguments[0] || null);
-    } else {
-      return new CommonResult(200, arguments[0] || '操作成功', arguments[1] || null);
+  public static success<T>(): CommonResult<T>;
+  public static success<T>(data?: T): CommonResult<T>;
+  public static success<T>(msg?: string, data?: T): CommonResult<T>;
+  public static success<T>(msg?: any, data?: any): CommonResult<T> {
+    if (arguments.length === 0) {
+      return new CommonResult<T>(200, '操作成功', null);
     }
-
+    if (arguments.length === 1) {
+      // eslint-disable-next-line prefer-rest-params
+      return new CommonResult<T>(200, '操作成功', arguments[0] || null);
+    }
+    if (arguments.length === 2) {
+      // eslint-disable-next-line prefer-rest-params
+      return new CommonResult<T>(200, msg || '操作成功', data || null);
+    }
   }
 
-  public static failed(msg?: string, code?: number): CommonResult<any> {
-    return new CommonResult(code || 500, msg || '未知异常', null);
+  public static failed<T>(): CommonResult<T>;
+  public static failed<T>(msg?: string, code?: number): CommonResult<T>;
+  public static failed<T>(msg?: any, code?: any): CommonResult<T> {
+    if (arguments.length === 0) {
+      return new CommonResult<T>(500, '未知异常', null);
+    }
+    return new CommonResult<T>(code || 500, msg || '未知异常', null);
   }
 }
