@@ -9,14 +9,15 @@ import sequelize from 'src/util/sequelize';
 import { Op } from 'sequelize';
 import { commonPage } from '../util/commonPage';
 import * as path from 'path';
-import { join } from 'path';
 import { createWriteStream, existsSync } from 'fs';
-
-const user = User.initModel(sequelize);
 
 @Injectable()
 export class UserService {
-  constructor() {}
+  public user;
+
+  constructor() {
+    this.user = User.initModel(sequelize);
+  }
 
   // 上传
   async upload(file: any) {
@@ -29,7 +30,7 @@ export class UserService {
       if (!existsSync(path.join(publicPath, fileName))) {
         // 创造一个读写流
         const writeStream = createWriteStream(
-          join(__dirname, '../..', 'public/' + fileName),
+          path.join(__dirname, '../..', 'public/' + fileName),
           {},
         );
         // 把buffer写进去
@@ -52,7 +53,7 @@ export class UserService {
     if (!userId) {
       throw new FailException('缺少userId');
     }
-    const result = await user.findOne({
+    const result = await this.user.findOne({
       attributes: {
         exclude: ['password'],
       },
@@ -64,18 +65,18 @@ export class UserService {
       throw new FailException('用户不存在,请联系管理员');
     }
 
-    return CommonResult.success('', result);
+    return CommonResult.success(result);
   }
 
   async test() {
-    const result = await user.findAll();
-    return CommonResult.success('', result);
+    const result = await this.user.findAll();
+    return CommonResult.success(result);
   }
 
   // 删除用户
   async delete(userId: string) {
     // 查找用户是否存在
-    const userOne = await user.findOne({
+    const userOne = await this.user.findOne({
       where: {
         userId,
       },
@@ -83,7 +84,7 @@ export class UserService {
     if (!userOne) {
       throw new FailException('暂无该用户');
     }
-    await user.destroy({
+    await this.user.destroy({
       where: {
         userId,
       },
@@ -108,7 +109,7 @@ export class UserService {
   async getUserList(query) {
     const { pageSize, pageNum } = query;
     const result = await commonPage<any>(
-      user,
+      this.user,
       { pageNum, pageSize },
       {
         attributes: {
@@ -123,7 +124,7 @@ export class UserService {
     userId: string,
     userAttr: Partial<Omit<UserAttributes, UserPk>>,
   ) {
-    const result = await user.update(
+    const result = await this.user.update(
       { ...userAttr },
       {
         where: {
@@ -143,7 +144,7 @@ export class UserService {
       roleId = null,
       userImg = null,
     }: any = body;
-    await user.upsert({
+    await this.user.upsert({
       userId: getSnowflakeId(),
       userName,
       phone,
@@ -165,7 +166,7 @@ export class UserService {
       password = null,
       roleId = null,
       userImg = null,
-    }: any = body;
+    }: UserAddDto = body;
     if (!phone) {
       throw new FailException('请输入手机号码');
     }
@@ -176,7 +177,7 @@ export class UserService {
       throw new FailException('请输入密码');
     }
     if (userId) {
-      await user.update(
+      await this.user.update(
         {
           userName,
           phone,
@@ -188,7 +189,7 @@ export class UserService {
         { where: { userId } },
       );
     } else {
-      await user.upsert({
+      await this.user.upsert({
         userId: getSnowflakeId(),
         userName,
         phone,
@@ -205,7 +206,7 @@ export class UserService {
 
   async login(body: UserLoginDto): Promise<CommonResult<UserLoginDto>> {
     const { userName = '', password = '' } = body;
-    const result = await user.findOne({
+    const result = await this.user.findOne({
       where: {
         [Op.or]: [
           { userName, password },

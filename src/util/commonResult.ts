@@ -9,11 +9,20 @@ export class CommonResult<T> {
     this.data = data;
   }
 
-  public static success(msg?: string, data?): CommonResult<any> {
-    return new CommonResult(200, msg || '操作成功', data || null);
+  public static success(data?): CommonResult<any>;
+
+  public static success(msg?: string, data?): CommonResult<any>;
+  public static success(msg?: any, data?: any): CommonResult<any> {
+
+    if (arguments.length === 1) {
+      return new CommonResult(200, '操作成功', arguments[0] || null);
+    } else {
+      return new CommonResult(200, arguments[0] || '操作成功', arguments[1] || null);
+    }
+
   }
 
-  public static failed(msg?: string, code?): CommonResult<any> {
+  public static failed(msg?: string, code?: number): CommonResult<any> {
     return new CommonResult(code || 500, msg || '未知异常', null);
   }
 }
