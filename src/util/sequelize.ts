@@ -1,6 +1,8 @@
 import { Sequelize, Options } from 'sequelize';
+
 const sequelizeOpts: Partial<Options> = {
   host: 'localhost',
+  port: 3306,
   dialect: 'mysql',
   dialectOptions: {
     multipleStatements: true,
