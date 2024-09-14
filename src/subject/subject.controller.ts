@@ -1,0 +1,40 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { SubjectService } from './subject.service';
+
+@Controller('subject')
+export class SubjectController {
+  constructor(private readonly subjectService: SubjectService) {}
+
+  @Post('/addOrUpdate')
+  create() {
+    return this.subjectService.create();
+  }
+
+  @Get('/get')
+  findAll() {
+    return this.subjectService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.subjectService.findOne(+id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateSubjectDto: any) {
+    return this.subjectService.update(+id, updateSubjectDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.subjectService.remove(+id);
+  }
+}
