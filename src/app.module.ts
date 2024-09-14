@@ -12,13 +12,15 @@ import { GlobalExceptionFilter } from './exception/httpExeception.filter';
 import { DbModule } from './db/db.module';
 import { Request } from 'express';
 import { SubjectModule } from './subject/subject.module';
-import { SubjectModule } from './subject/subject.module';
+import { NoticeModule } from './notice/notice.module';
+import { NoticeService } from './notice/notice.service';
 @Module({
-  imports: [UserModule, DbModule, SubjectModule],
+  imports: [NoticeModule, UserModule, DbModule, SubjectModule],
   controllers: [AppController],
   providers: [
     AppService,
     UserService,
+    NoticeService,
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
