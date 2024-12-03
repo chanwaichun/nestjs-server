@@ -23,8 +23,8 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
   app.useStaticAssets(join(__dirname, '..', 'public'), { prefix: '/static' });
-  console.log('当前项目部署在','http://localhost:3000',);
-  console.log('swagger地址','http://localhost:3000/api/#/',);
+  console.log('当前项目部署在', 'http://localhost:3000');
+  console.log('swagger地址', 'http://localhost:3000/api/#/');
   await app.listen(3000);
 }
 

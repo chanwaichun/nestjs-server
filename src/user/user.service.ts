@@ -15,6 +15,7 @@ import { NoticeService } from '../notice/notice.service';
 @Injectable()
 export class UserService {
   public user;
+
   constructor(noticeService: NoticeService) {
     this.user = User.initModel(sequelize);
     console.log(noticeService);
@@ -68,12 +69,6 @@ export class UserService {
 
     return CommonResult.success<Partial<UserAttributes>>(result);
   }
-
-  async test() {
-    const result = await this.user.findAll();
-    return CommonResult.success(result);
-  }
-
   // 删除用户
   async delete(userId: string) {
     // 查找用户是否存在
@@ -205,7 +200,11 @@ export class UserService {
     return CommonResult.success();
   }
 
-  async login(body: UserLoginDto): Promise<CommonResult<UserLoginDto>> {
+  test() {
+    return CommonResult.success({});
+  }
+
+  async login(body: UserLoginDto): Promise<CommonResult<string>> {
     const { userName = '', password = '' } = body;
     const result = await this.user.findOne({
       where: {

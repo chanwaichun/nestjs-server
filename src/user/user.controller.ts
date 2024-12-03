@@ -111,7 +111,7 @@ export class UserController {
       properties: {
         userName: {
           type: 'string',
-          example: '13412331232',
+          example: '13532299454',
           description: '用户名',
         },
         password: {
