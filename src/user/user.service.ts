@@ -15,9 +15,10 @@ import { NoticeService } from '../notice/notice.service';
 @Injectable()
 export class UserService {
   public user;
+  public noticeService;
   constructor(noticeService: NoticeService) {
     this.user = User.initModel(sequelize);
-    console.log(noticeService);
+    this.noticeService = noticeService;
   }
 
   // 上传
@@ -220,7 +221,7 @@ export class UserService {
     });
     if (result) {
       const plain = await result.get({ plain: true });
-      // this.noticeService.sendMessageToClient('成功登录');
+      this.noticeService.sendMessageToClient('成功登录');
       return CommonResult.success(encodeToken(plain));
     } else {
       throw new FailException('账号或密码不正确');

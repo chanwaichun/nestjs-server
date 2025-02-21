@@ -1,11 +1,15 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
 import { CommonResult } from '../util/commonResult';
+
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   async catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = await ctx.getResponse();
-    console.log(exception);
+    const req = await ctx.getRequest();
+    if (!['/favicon.ico'].includes(req.originalUrl)) {
+      console.log(exception);
+    }
     res.status(200);
     if (exception.status === 401) {
       res.json(CommonResult.failed('登录已过期', exception.status));
