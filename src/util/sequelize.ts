@@ -1,15 +1,17 @@
 import { Sequelize, Options } from 'sequelize';
 const sequelizeOpts: Partial<Options> = {
-  host: 'localhost',
+  host: '8.138.37.136',
   dialect: 'mysql',
+  port: 3306,
   dialectOptions: {
     multipleStatements: true,
   },
 };
 const sequelize = new Sequelize(
   'report_database',
-  'root',
-  '123456789',
+  'chenweijun',
+  'Cwj19970802',
+
   sequelizeOpts,
 );
 

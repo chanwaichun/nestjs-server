@@ -1,31 +1,41 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { createSwaggerConfig } from './swagger.config';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('Bootstrap');
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // swagger 配置
-  const config = new DocumentBuilder()
-    .setTitle('接口文档')
-    .setDescription('这个接口文档我是自动生成的')
-    .setVersion('1.0')
-    .addTag('接口文档')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-  app.use(function (req, res, next) {
-    console.log('res here');
+
+  // Swagger 配置
+  const swaggerConfig = createSwaggerConfig();
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+
+  // 生产环境中关闭 Swagger
+  if (process.env.NODE_ENV !== 'production') {
+    SwaggerModule.setup('swagger', app, document);
+    logger.log('swagger地址: http://localhost:3000/swagger');
+  }
+
+  // 日志中间件（如果需要的话可以加强日志功能）
+  app.use((req, res, next) => {
+    logger.log(`Request to ${req.originalUrl}`);
     next();
   });
+
+  // 全局验证管道
   app.useGlobalPipes(new ValidationPipe());
+  // 静态资源配置
   app.useStaticAssets(join(__dirname, '..', 'public'), { prefix: '/static' });
-  console.log('当前项目部署在','http://localhost:3000',);
-  console.log('swagger地址','http://localhost:3000/api/#/',);
+
+  // 启动服务
   await app.listen(3000);
+  logger.log('当前项目部署在 http://localhost:3000');
 }
 
 bootstrap();

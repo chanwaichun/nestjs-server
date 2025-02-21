@@ -7,7 +7,7 @@ export class DbService {
 
   constructor() {
     const sequelizeOpts: Partial<Options> = {
-      host: 'localhost',
+      host: '8.138.37.136',
       dialect: 'mysql',
       dialectOptions: {
         multipleStatements: true,
@@ -15,8 +15,8 @@ export class DbService {
     };
     const sequelize = new Sequelize(
       'report_database',
-      'root',
-      '123456789',
+      'chenweijun',
+      'Cwj19970802',
       sequelizeOpts,
     );
 

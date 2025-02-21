@@ -3,8 +3,10 @@ import { NoticeGateway } from './notice.gateway';
 
 @Injectable()
 export class NoticeService {
-  constructor(private readonly noticeGateWay: NoticeGateway) {
-    console.log(this.noticeGateWay);
+  public noticeGateWay: NoticeGateway;
+
+  constructor(noticeGateWay: NoticeGateway) {
+    this.noticeGateWay = noticeGateWay;
   }
 
   sendMessageToClient(msg: string) {
