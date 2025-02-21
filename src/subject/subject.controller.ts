@@ -8,12 +8,15 @@ import {
   Post,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
-
-@Controller('subject')
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+@ApiTags('科目管理')
+@ApiBearerAuth()
+@Controller('/api/subject')
 export class SubjectController {
-  constructor(private readonly subjectService: SubjectService) {}
-
-  @Post('/addOrUpdate')
+  constructor(private readonly subjectService: SubjectService) {
+  }
+  @ApiOperation({ tags: ['获取用户列表'], description: '获取用户列表' })
+  @Post('/create')
   create() {
     return this.subjectService.create();
   }

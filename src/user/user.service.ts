@@ -221,7 +221,7 @@ export class UserService {
     });
     if (result) {
       const plain = await result.get({ plain: true });
-      this.noticeService.sendMessageToClient('成功登录');
+      // this.noticeService.sendMessageToClient('成功登录');
       return CommonResult.success(encodeToken(plain));
     } else {
       throw new FailException('账号或密码不正确');
