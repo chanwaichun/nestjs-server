@@ -11,5 +11,4 @@ import { NoticeService } from '../notice/notice.service';
   providers: [UserService, DbService, NoticeService],
   exports: [UserService],
 })
-export class UserModule {
-}
+export class UserModule {}

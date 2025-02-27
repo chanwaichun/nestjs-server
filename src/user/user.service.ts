@@ -16,6 +16,7 @@ import { NoticeService } from '../notice/notice.service';
 export class UserService {
   public user;
   public noticeService;
+
   constructor(noticeService: NoticeService) {
     this.user = User.initModel(sequelize);
     this.noticeService = noticeService;
@@ -206,7 +207,7 @@ export class UserService {
     return CommonResult.success();
   }
 
-  async login(body: UserLoginDto): Promise<CommonResult<UserLoginDto>> {
+  async login(body: UserLoginDto): Promise<CommonResult<string>> {
     const { userName = '', password = '' } = body;
     const result = await this.user.findOne({
       where: {

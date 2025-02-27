@@ -14,8 +14,22 @@ import { Request } from 'express';
 import { SubjectModule } from './subject/subject.module';
 import { NoticeModule } from './notice/notice.module';
 import { NoticeService } from './notice/notice.service';
+import { ThirdPartyModule } from './thirdParty/thirdParty.module';
+import { ConfigModule } from '@nestjs/config';
+import * as path from 'path';
+
 @Module({
-  imports: [NoticeModule, UserModule, DbModule, SubjectModule],
+  imports: [
+    NoticeModule,
+    UserModule,
+    DbModule,
+    SubjectModule,
+    ThirdPartyModule,
+    ConfigModule.forRoot({
+      envFilePath: path.resolve(`env/.env.${process.env.NODE_ENV}`),
+      isGlobal: true, // 使得环境变量在整个应用中都可以访问
+    }),
+  ],
   controllers: [AppController],
   providers: [
     AppService,

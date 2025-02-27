@@ -13,8 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 @ApiBearerAuth()
 @Controller('/api/subject')
 export class SubjectController {
-  constructor(private readonly subjectService: SubjectService) {
-  }
+  constructor(private readonly subjectService: SubjectService) {}
   @ApiOperation({ tags: ['获取用户列表'], description: '获取用户列表' })
   @Post('/create')
   create() {

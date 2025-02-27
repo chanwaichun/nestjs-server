@@ -14,7 +14,7 @@ export class SubjectService {
   }
 
   create() {
-    console.log(this.userService.test())
+    console.log(this.userService.test());
     return 'This action adds a new subject';
   }
 
