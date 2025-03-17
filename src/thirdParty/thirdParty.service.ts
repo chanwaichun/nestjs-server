@@ -4,6 +4,13 @@ import { lastValueFrom } from 'rxjs';
 import { Response } from 'express';
 import { CommonResult } from '../util/commonResult';
 
+type ChatApiParams = {
+  messages: Array<{
+    role: string;
+    content: string;
+  }>;
+};
+
 @Injectable()
 export class ThirdPartyService {
   constructor(private readonly httpService: HttpService) {
@@ -43,35 +50,26 @@ export class ThirdPartyService {
   //     throw new Error(`Failed to fetch data: ${error.message}`);
   //   }
   // }
-  async chatMessage(body: any, res: Response): Promise<any> {
+  async chatMessage(body: ChatApiParams, res: Response): Promise<any> {
     const url = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'; // 第三方接口地址
     try {
-
+      const data = {
+        model: 'deepseek-v3-241226',
+        stream: true,
+        ...body,
+      };
+      console.log(data);
       // 发起 GET 请求
       const response = await lastValueFrom(
-        this.httpService.post(
-          url,
-          {
-            model: 'deepseek-v3-241226',
-            messages: [
-              {
-                role: 'system',
-                content: '你是豆包，是由字节跳动开发的 AI 人工智能助手.',
-              },
-              { role: 'user', content: '常见的十字花科植物有哪些？' },
-            ],
-            stream: true,
+        this.httpService.post(url, data, {
+          // Query 参数
+          headers: {
+            Authorization: 'Bearer 8cdff6b5-5aa8-4d17-b89c-997db8ad032e',
           },
-          {
-            // Query 参数
-            headers: {
-              Authorization: 'Bearer 8cdff6b5-5aa8-4d17-b89c-997db8ad032e',
-            },
-            responseType: 'stream',
-          },
-        ),
+          responseType: 'stream',
+        }),
       );
-      console.log(response);
+
       res.setHeader('Content-Type', 'text/event-stream');
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
@@ -89,7 +87,6 @@ export class ThirdPartyService {
         return CommonResult.failed();
       });
     } catch (error) {
-      console.log(error);
       // 处理错误
       throw new Error(`Failed to fetch data: ${error.message}`);
     }

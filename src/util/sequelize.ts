@@ -11,6 +11,12 @@ const sequelizeOpts: Partial<Options> = {
   dialectOptions: {
     multipleStatements: true,
   },
+  pool: {
+    max: 10, // 最大连接数
+    min: 1, // 最小连接数
+    acquire: 30000, // 获取连接的最长等待时间 (ms)
+    idle: 10000, // 连接空闲多久后释放 (ms)
+  },
 };
 const sequelize = new Sequelize(
   'report_database',
@@ -20,7 +26,6 @@ const sequelize = new Sequelize(
 );
 
 try {
-
   sequelize.authenticate();
   console.log('Connection has been established successfully.');
 } catch (error) {

@@ -9,5 +9,6 @@ export const WHITE_LIST: string[] = [
   '/api/user/addOrUpdate',
   '/static/',
   '/api/thirdParty/chat',
+  '/api/zitie/getZitieByLevel',
   '/favicon.ico',
 ];

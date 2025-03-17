@@ -16,6 +16,7 @@ import { NoticeModule } from './notice/notice.module';
 import { NoticeService } from './notice/notice.service';
 import { ThirdPartyModule } from './thirdParty/thirdParty.module';
 import { ConfigModule } from '@nestjs/config';
+import { ZitieModule } from './zitie/zitie.module';
 import * as path from 'path';
 
 @Module({
@@ -25,6 +26,7 @@ import * as path from 'path';
     DbModule,
     SubjectModule,
     ThirdPartyModule,
+    ZitieModule,
     ConfigModule.forRoot({
       envFilePath: path.resolve(`env/.env.${process.env.NODE_ENV}`),
       isGlobal: true, // 使得环境变量在整个应用中都可以访问
