@@ -1,6 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import {
+  Model,
+  Column,
+  CreatedAt,
+  Table,
+  UpdatedAt,
+} from 'sequelize-typescript';
 
+@Table({
+  tableName: 'users',
+  timestamps: true, // ✅ 开启 Sequelize 时间戳管理
+})
 export class User {
   @ApiProperty({
     description: '用户Id',
@@ -29,4 +40,13 @@ export class User {
   password: string;
   roleId: string;
   userImg: string;
+  deviceId: string;
+
+  @CreatedAt
+  @Column({ field: 'create_time' }) // 自定义字段名
+  createTime: Date;
+
+  @UpdatedAt
+  @Column({ field: 'update_time' }) // 自定义字段名
+  updateTime: Date;
 }

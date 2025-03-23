@@ -6,8 +6,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 @ApiBearerAuth()
 @Controller('/api/thirdParty')
 export class ThirdPartyController {
-  constructor(private readonly thirdPartyService: ThirdPartyService) {
-  }
+  constructor(private readonly thirdPartyService: ThirdPartyService) {}
 
   @ApiOperation({ tags: ['ai调用'], description: 'ai调用' })
   @Post('/chatMessage')

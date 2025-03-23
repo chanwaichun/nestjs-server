@@ -81,7 +81,28 @@ export class UserController {
   getRoleList() {
     return this.userService.getRoleList();
   }
-
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userName: {
+          type: 'string',
+          example: '13532299454',
+          description: '用户名',
+        },
+        password: {
+          type: 'string',
+          example: '111111',
+          description: '密码',
+        },
+        phone: {
+          type: 'string',
+          example: '111111',
+          description: '密码',
+        },
+      },
+    },
+  })
   @Post('/addOrUpdate')
   async addOrUpdate(@Body() body: UserAddDto) {
     return await this.userService.addOrUpdate(body);

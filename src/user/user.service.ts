@@ -4,7 +4,8 @@ import { decodeToken, encodeToken } from 'src/util/token';
 import { FailException } from 'src/exception/apiException';
 import { getSnowflakeId, getTime } from 'src/util';
 import { CommonResult } from '../util/commonResult';
-import { User, UserAttributes, UserPk } from 'src/dao/User';
+import { UserAttributes, UserPk } from 'src/dao/User';
+import { UserModel } from 'src/model/user';
 import sequelize from 'src/util/sequelize';
 import { Op } from 'sequelize';
 import { commonPage } from '../util/commonPage';
@@ -18,7 +19,7 @@ export class UserService {
   public noticeService;
 
   constructor(noticeService: NoticeService) {
-    this.user = User.initModel(sequelize);
+    this.user = UserModel.initModel(sequelize);
     this.noticeService = noticeService;
   }
 
@@ -168,6 +169,7 @@ export class UserService {
       phone = null,
       password = null,
       roleId = null,
+      deviceId = null,
       userImg = null,
     }: UserAddDto = body;
     if (!phone) {
@@ -187,20 +189,19 @@ export class UserService {
           password,
           roleId,
           userImg,
-          updateTime: getTime(),
+          deviceId,
         },
         { where: { userId } },
       );
     } else {
-      await this.user.upsert({
+      await this.user.create({
         userId: getSnowflakeId(),
         userName,
         phone,
         password,
         roleId,
         userImg,
-        createTime: getTime(),
-        updateTime: getTime(),
+        deviceId,
       });
     }
     // console.log(result);

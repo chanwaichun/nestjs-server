@@ -4,7 +4,8 @@ import { DataTypes, Model, Optional } from 'sequelize';
 export interface UserAttributes {
   userId: string;
   userName?: string;
-  phone: string;
+  deviceId?: string;
+  phone?: string;
   password?: string;
   roleId?: string;
   userImg?: string;
@@ -16,6 +17,8 @@ export type UserPk = 'userId';
 export type UserId = User[UserPk];
 export type UserOptionalAttributes =
   | 'userName'
+  | 'deviceId'
+  | 'phone'
   | 'password'
   | 'roleId'
   | 'userImg'
@@ -32,7 +35,8 @@ export class User
 {
   userId!: string;
   userName?: string;
-  phone!: string;
+  deviceId?: string;
+  phone?: string;
   password?: string;
   roleId?: string;
   userImg?: string;
@@ -53,9 +57,14 @@ export class User
           allowNull: true,
           field: 'user_name',
         },
+        deviceId: {
+          type: DataTypes.STRING(255),
+          allowNull: true,
+          field: 'device_id',
+        },
         phone: {
           type: DataTypes.STRING(255),
-          allowNull: false,
+          allowNull: true,
         },
         password: {
           type: DataTypes.STRING(255),
