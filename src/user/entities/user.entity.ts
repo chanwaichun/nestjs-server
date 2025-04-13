@@ -7,12 +7,13 @@ import {
   Table,
   UpdatedAt,
 } from 'sequelize-typescript';
+import { UserAttributes, User as UserRaw } from '../../dao/User';
 
 @Table({
   tableName: 'users',
   timestamps: true, // ✅ 开启 Sequelize 时间戳管理
 })
-export class User {
+export class User extends UserRaw {
   @ApiProperty({
     description: '用户Id',
   })
@@ -37,11 +38,6 @@ export class User {
   @ApiProperty({
     description: '用户密码',
   })
-  password: string;
-  roleId: string;
-  userImg: string;
-  deviceId: string;
-
   @CreatedAt
   @Column({ field: 'create_time' }) // 自定义字段名
   createTime: Date;

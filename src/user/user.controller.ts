@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserAddDto, UserLoginDto } from './dto/user.dto';
+import { LoginByDeviceIdDto, UserAddDto, UserLoginDto } from './dto/user.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -69,18 +69,29 @@ export class UserController {
     return await this.userService.delete(query.userId);
   }
 
+  @ApiOperation({ tags: ['用户信息'], description: '用户信息' })
+  @ApiQuery({
+    name: 'userId',
+    type: String,
+    description: '用户id',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'deviceId',
+    type: String,
+    description: '设备ID',
+    required: false,
+  })
   @Get('/info')
   async getUserInfo(@Query() query: UserAddDto, @Headers() headers: any) {
-    return await this.userService.getUserInfo(
-      query.userId,
-      headers.authorization,
-    );
+    return await this.userService.getUserInfo(query, headers.authorization);
   }
 
   @Get('/get/role/list')
   getRoleList() {
     return this.userService.getRoleList();
   }
+
   @ApiBody({
     schema: {
       type: 'object',
@@ -130,19 +141,19 @@ export class UserController {
     schema: {
       type: 'object',
       properties: {
-        userName: {
+        deviceId: {
           type: 'string',
-          example: '13532299454',
-          description: '用户名',
-        },
-        password: {
-          type: 'string',
-          example: '111111',
-          description: '密码',
+          example: '222222222222222',
+          description: '设备ID',
         },
       },
     },
   })
+  @Post('/loginByDeviceId')
+  async loginByDeviceId(@Body() body: LoginByDeviceIdDto) {
+    return await this.userService.loginByDeviceId(body);
+  }
+
   @Post('/login')
   async login(@Body() body: UserLoginDto) {
     return await this.userService.login(body);

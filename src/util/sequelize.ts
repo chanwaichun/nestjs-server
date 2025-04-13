@@ -5,10 +5,16 @@ import * as process from 'process';
 dotenv.config({ path: `env/.env.${process.env.NODE_ENV}` });
 console.log(process.env.DATABASE_HOST);
 const sequelizeOpts: Partial<Options> = {
+  define: {
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_general_ci',
+  },
+  timezone: '+08:00', // 东八区时间
   host: process.env.DATABASE_HOST,
   dialect: 'mysql',
   port: Number(process.env.DATABASE_PORT),
   dialectOptions: {
+    charset: 'utf8mb4',
     multipleStatements: true,
   },
   pool: {

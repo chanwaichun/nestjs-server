@@ -41,7 +41,8 @@
     "rxjs": "^7.8.1",
     "sequelize-auto": "^0.8.8",
     "sequelize-typescript": "^2.1.6",
-    "snowflake-id": "^1.1.0"
+    "snowflake-id": "^1.1.0",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

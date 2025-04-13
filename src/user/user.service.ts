@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { UserAddDto, UserLoginDto } from './dto/user.dto';
+import { LoginByDeviceIdDto, UserAddDto, UserLoginDto } from './dto/user.dto';
 import { decodeToken, encodeToken } from 'src/util/token';
 import { FailException } from 'src/exception/apiException';
 import { getSnowflakeId, getTime } from 'src/util';
 import { CommonResult } from '../util/commonResult';
 import { UserAttributes, UserPk } from 'src/dao/User';
-import { UserModel } from 'src/model/user';
+import { User } from 'src/model/user';
 import sequelize from 'src/util/sequelize';
 import { Op } from 'sequelize';
 import { commonPage } from '../util/commonPage';
@@ -19,7 +19,7 @@ export class UserService {
   public noticeService;
 
   constructor(noticeService: NoticeService) {
-    this.user = UserModel.initModel(sequelize);
+    this.user = User.initModel(sequelize);
     this.noticeService = noticeService;
   }
 
@@ -48,28 +48,57 @@ export class UserService {
 
   /**
    *
-   * @param id
-   * @param authorization
+   * @param query
    */
-  async getUserInfo(id: string, authorization: string) {
-    const res: any = await decodeToken(authorization);
-    const userId = id || res.userId;
-    if (!userId) {
-      throw new FailException('缺少userId');
-    }
+  async getInfoByUserId(query: string) {
     const result: Partial<UserAttributes> = await this.user.findOne({
       attributes: {
         exclude: ['password'],
       },
       where: {
-        userId,
+        userId: query,
       },
     });
     if (!result) {
       throw new FailException('用户不存在,请联系管理员');
     }
-
     return CommonResult.success<Partial<UserAttributes>>(result);
+  }
+
+  async getInfoByDeviceId(query: string) {
+    const result: Partial<UserAttributes> = await this.user.findOne({
+      attributes: {
+        exclude: ['password'],
+      },
+      where: {
+        userId: query,
+      },
+    });
+    if (!result) {
+      throw new FailException('用户不存在,请联系管理员');
+    }
+    return CommonResult.success<Partial<UserAttributes>>(result);
+  }
+
+  /**
+   *
+   * @param query
+   * @param authorization
+   */
+  async getUserInfo(
+    query: Pick<UserAddDto, 'userId' | 'deviceId'>,
+    authorization: string,
+  ) {
+    // 解密token
+    if (query.userId) {
+      return this.getInfoByUserId(query.userId);
+    }
+    if (query.deviceId) {
+      return this.getInfoByDeviceId(query.userId);
+    }
+    const res: any = await decodeToken(authorization);
+    const userId = res.userId;
+    return this.getInfoByUserId(userId);
   }
 
   async test() {
@@ -206,6 +235,31 @@ export class UserService {
     }
     // console.log(result);
     return CommonResult.success();
+  }
+
+  async loginByDeviceId(body: LoginByDeviceIdDto) {
+    const userInfo = await this.user.findOne({
+      where: {
+        deviceId: body.deviceId,
+      },
+    });
+    if (userInfo) {
+      const plain = await userInfo.get({ plain: true });
+      return CommonResult.success(encodeToken(plain));
+    } else {
+      await this.user.create({
+        userId: getSnowflakeId(),
+        deviceId: body.deviceId,
+      });
+      const userInfo = await this.user.findOne({
+        where: {
+          deviceId: body.deviceId,
+        },
+      });
+      const plain = await userInfo.get({ plain: true });
+      console.log(plain);
+      return CommonResult.success(encodeToken(plain));
+    }
   }
 
   async login(body: UserLoginDto): Promise<CommonResult<string>> {

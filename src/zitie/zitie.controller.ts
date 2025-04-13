@@ -1,7 +1,8 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Header, Post, Res, Req } from '@nestjs/common';
 import { ZitieService } from './zitie.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ThirdPartyService } from '../thirdParty/thirdParty.service';
+import { AddMessageDto } from './dto/zitie.dto';
 
 @ApiTags('字帖')
 @Controller('/api/zitie')
@@ -28,5 +29,40 @@ export class ZitieController {
       ],
     };
     return this.thirdPartyService.chatMessage(params, res); // 添加两个空字符串参数以满足方法签名要求
+  }
+
+  @ApiOperation({ tags: ['字帖'], description: '开始一个对话' })
+  @Post('/startConversation')
+  startConversation(@Body() body: any) {
+    return this.zitieService.startConversation(body);
+  }
+
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        content: {
+          type: 'string',
+          example: 'test',
+          description: '对话内容',
+        },
+        deviceId: {
+          type: 'string',
+          example: '222222222222',
+          description: '设备ID',
+        },
+      },
+    },
+  })
+  @ApiOperation({ tags: ['字帖'], description: '开始发一条消息' })
+  @Post('/addMessage')
+  async addMessage(@Body() body: AddMessageDto) {
+    return this.zitieService.addMessage(body);
+  }
+
+  @ApiOperation({ tags: ['字帖'], description: '删除一条消息' })
+  @Post('/deleteMessage')
+  deleteMessage() {
+    return this.zitieService.deleteMessage();
   }
 }

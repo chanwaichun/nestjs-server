@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { Response } from 'express';
 import { CommonResult } from '../util/commonResult';
+import { uuid } from 'uuidv4';
 
 type ChatApiParams = {
   messages: Array<{
@@ -56,9 +57,13 @@ export class ThirdPartyService {
       const data = {
         model: 'deepseek-v3-241226',
         stream: true,
+        frequency_penalty: 2,
+        max_tokens: 1000,
         ...body,
       };
       console.log(data);
+      const messageId = uuid();
+      console.log(messageId);
       // 发起 GET 请求
       const response = await lastValueFrom(
         this.httpService.post(url, data, {
@@ -75,6 +80,7 @@ export class ThirdPartyService {
       res.setHeader('Connection', 'keep-alive');
       // 监听 AI 响应流数据
       response.data.on('data', (chunk: Buffer) => {
+        console.log(chunk.toString());
         res.write(chunk.toString()); // SSE 格式
       });
 
